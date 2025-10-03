@@ -1,0 +1,7 @@
+test.sh
+tmp.cpp
+diffbot.urdf
+.vscode/*
+build/*
+install/*
+log/*
