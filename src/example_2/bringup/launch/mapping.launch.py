@@ -1,25 +1,13 @@
-# Copyright 2020 ros2_control Development Team
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler
+from launch.actions import DeclareLaunchArgument, RegisterEventHandler, TimerAction
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution, LaunchConfiguration
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+from launch.actions import IncludeLaunchDescription
 
 
 def generate_launch_description():
@@ -39,10 +27,26 @@ def generate_launch_description():
             description="Start robot with mock hardware mirroring command to its states.",
         )
     )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "lidar_port",
+            default_value="/dev/ttyUSB1",
+            description="Serial port for SLLIDAR",
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "slam_params_file",
+            default_value="./config/mymapper_params_online_async.yaml",
+            description="SLAM Toolbox parameters file",
+        )
+    )
 
     # Initialize Arguments
     gui = LaunchConfiguration("gui")
     use_mock_hardware = LaunchConfiguration("use_mock_hardware")
+    lidar_port = LaunchConfiguration("lidar_port")
+    slam_params_file = LaunchConfiguration("slam_params_file")
 
     # Get URDF via xacro
     robot_description_content = Command(
@@ -70,6 +74,7 @@ def generate_launch_description():
         [FindPackageShare("ros2_control_demo_description"), "diffbot/rviz", "diffbot.rviz"]
     )
 
+    # Core nodes
     control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
@@ -109,7 +114,7 @@ def generate_launch_description():
         ],
     )
 
-    # Delay rviz start after `joint_state_broadcaster`
+    # Delay start events
     delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=joint_state_broadcaster_spawner,
@@ -117,8 +122,6 @@ def generate_launch_description():
         )
     )
 
-    # Delay start of joint_state_broadcaster after `robot_controller`
-    # TODO(anyone): This is a workaround for flaky tests. Remove when fixed.
     delay_joint_state_broadcaster_after_robot_controller_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=robot_controller_spawner,
@@ -126,12 +129,40 @@ def generate_launch_description():
         )
     )
 
+    # Include SLLIDAR launch
+    sllidar_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            PathJoinSubstitution(
+                [FindPackageShare("sllidar_ros2"), "launch", "sllidar_a1_launch.py"]
+            )
+        ),
+        launch_arguments={"serial_port": lidar_port}.items(),
+    )
+
+    # Include SLAM Toolbox launch
+    slam_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            PathJoinSubstitution(
+                [FindPackageShare("slam_toolbox"), "launch", "online_async_launch.py"]
+            )
+        ),
+        launch_arguments={"slam_params_file": slam_params_file}.items(),
+    )
+
+    # 延遲啟動 SLAM Toolbox (確保 TF 已準備好)
+    slam_launch_delayed = TimerAction(
+        period=5.0,  # 延遲 5 秒，可依需要調整
+        actions=[slam_launch]
+    )
+
     nodes = [
         control_node,
         robot_state_pub_node,
         robot_controller_spawner,
-        # delay_rviz_after_joint_state_broadcaster_spawner,
         delay_joint_state_broadcaster_after_robot_controller_spawner,
+        sllidar_launch,
+        slam_launch_delayed,  # 使用延遲啟動 SLAM Toolbox
+        # delay_rviz_after_joint_state_broadcaster_spawner,  # 可選擇啟用
     ]
 
     return LaunchDescription(declared_arguments + nodes)
