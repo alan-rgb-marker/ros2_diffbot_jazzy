@@ -5,4 +5,4 @@ diffbot.urdf
 build/*
 install/*
 log/*
-sllidar_ros2/*
+src/example_2/sllidar_ros2/*
