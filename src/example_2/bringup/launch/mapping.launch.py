@@ -30,7 +30,8 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "lidar_port",
-            default_value="/dev/ttyUSB1",
+            # default_value="/dev/ttyUSB1",
+	    default_value="/dev/serial/by-path/platform-xhci-hcd.1-usbv2-0:1:1.0-port0",
             description="Serial port for SLLIDAR",
         )
     )
@@ -80,6 +81,9 @@ def generate_launch_description():
         executable="ros2_control_node",
         parameters=[robot_controllers],
         output="both",
+	#remappings=[
+        #    ("/diffbot_base_controller/odom", "/odom"),  # 新增這行！
+    	#],
     )
     robot_state_pub_node = Node(
         package="robot_state_publisher",
@@ -122,11 +126,19 @@ def generate_launch_description():
         )
     )
 
-    delay_joint_state_broadcaster_after_robot_controller_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=robot_controller_spawner,
-            on_exit=[joint_state_broadcaster_spawner],
-        )
+    # delay_joint_state_broadcaster_after_robot_controller_spawner = RegisterEventHandler(
+    #     event_handler=OnProcessExit(
+    #         target_action=robot_controller_spawner,
+    #         on_exit=[joint_state_broadcaster_spawner],
+    #     )
+    # )
+    joint_state_broadcaster_spawner_delayed = TimerAction(
+        period=2.0,  # 延遲 2 秒，可調整
+        actions=[Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["joint_state_broadcaster"],
+        )]
     )
 
     # Include SLLIDAR launch
@@ -156,10 +168,11 @@ def generate_launch_description():
     )
 
     nodes = [
-        control_node,
         robot_state_pub_node,
+        control_node,
         robot_controller_spawner,
-        delay_joint_state_broadcaster_after_robot_controller_spawner,
+        joint_state_broadcaster_spawner_delayed,
+        # delay_joint_state_broadcaster_after_robot_controller_spawner,
         sllidar_launch,
         slam_launch_delayed,  # 使用延遲啟動 SLAM Toolbox
         # delay_rviz_after_joint_state_broadcaster_spawner,  # 可選擇啟用

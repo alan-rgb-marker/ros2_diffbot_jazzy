@@ -15,7 +15,7 @@ diffbot_base_controller:
     left_wheel_names: ["left_wheel_joint"]
     right_wheel_names: ["right_wheel_joint"]
 
-    wheel_separation: 0.152 #0.10
+    wheel_separation: 0.076 #0.152 #0.10
     #wheels_per_side: 1  # actually 2, but both are controlled by 1 signal
     wheel_radius: 0.0335 #0.015
 
@@ -28,9 +28,16 @@ diffbot_base_controller:
     base_frame_id: base_link
     pose_covariance_diagonal : [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
     twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
-
-    open_loop: true
+    
+    #虛擬odom 依靠速度來確認里程計，適合模擬用，實體要關掉，因為要參考真的里程計
+    #open_loop: true
+    open_loop: false
     enable_odom_tf: true
+
+    #新增的
+    #odometry_topic: /odom
+    publish_odom: true
+    publish_odom_tf: true
 
 
     cmd_vel_timeout: 0.5
