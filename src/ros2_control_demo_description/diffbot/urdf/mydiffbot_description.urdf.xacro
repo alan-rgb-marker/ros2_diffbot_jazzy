@@ -25,6 +25,16 @@
 
     <!-- Base Link -->
     <link name="${prefix}base_link">
+
+    </link>
+
+    <joint name="${prefix}chassis_joint" type="fixed">
+      <parent link="${prefix}base_link"/>
+      <child link="${prefix}chassis"/>
+      <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
+    </joint>
+
+    <link name="${prefix}chassis">
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
@@ -51,7 +61,7 @@
       <parent link="${prefix}base_link"/>
       <child link="${prefix}left_wheel"/>
       <!-- <origin xyz="0 -${base_width/2} ${z_offset}" rpy="0 0 0"/> -->
-      <origin xyz="0.055 ${(base_width/2)+(wheel_len/2)-0.001} 0" rpy="0 0 0"/>
+      <origin xyz="0.055 ${(base_width/2)+(wheel_len/2)-0.001} ${wheel_radius}" rpy="0 0 0"/>
       <axis xyz="0 1 0"/>
       <dynamics damping="0.2"/>
       <limit effort="100" velocity="1.0"/>
@@ -85,7 +95,7 @@
       <parent link="${prefix}base_link"/>
       <child link="${prefix}right_wheel"/>
       <!-- <origin xyz="0 ${base_width/2} ${z_offset}" rpy="0 0 0"/> -->
-      <origin xyz="0.055 ${(-base_width/2)-(wheel_len/2)+0.001} 0" rpy="0 0 0"/>
+      <origin xyz="0.055 ${(-base_width/2)-(wheel_len/2)+0.001} ${wheel_radius}" rpy="0 0 0"/>
       <axis xyz="0 1 0"/>
       <dynamics damping="0.2"/>
       <limit effort="100" velocity="1.0"/>
@@ -119,7 +129,8 @@
       <parent link="${prefix}base_link"/>
       <child link="${prefix}caster_right_wheel"/>
       <!-- <origin xyz="${base_width/2 - caster_wheel_radius} 0 ${z_offset}" rpy="0 0 0"/> -->
-      <origin xyz="-0.05 0.05 -${wheel_radius-0.0075}" rpy="0 0 0"/>
+      <!-- <origin xyz="-0.05 0.05 -${wheel_radius-0.0075}" rpy="0 0 0"/> -->
+      <origin xyz="-0.05 0.05 ${caster_wheel_radius}" rpy="0 0 0"/>
     </joint>
 
     <!-- caster right wheel Link -->
@@ -150,7 +161,8 @@
       <parent link="${prefix}base_link"/>
       <child link="${prefix}caster_left_wheel"/>
       <!-- <origin xyz="${-base_width/2 + caster_wheel_radius} 0 ${z_offset}" rpy="0 0 0"/> -->
-      <origin xyz="-0.05 -0.05 -${wheel_radius-0.0075}" rpy="0 0 0"/>
+      <!-- <origin xyz="-0.05 -0.05 -${wheel_radius-0.0075}" rpy="0 0 0"/> -->
+      <origin xyz="-0.05 -0.05 ${caster_wheel_radius}" rpy="0 0 0"/>
     </joint>
 
     <!-- caster left wheel Link -->
@@ -180,7 +192,7 @@
   <joint name="${prefix}laser_joint" type="fixed">
     <parent link="${prefix}base_link"/>
     <child  link="${prefix}laser"/>
-    <origin xyz="0.059 0 0.1025" rpy="0 0 3.1415926"/>
+    <origin xyz="0.059 0 0.136" rpy="0 0 0"/> <!--z 0.1025+0.335(輪胎半徑)-->
   </joint>
 
   <link name="${prefix}laser">
