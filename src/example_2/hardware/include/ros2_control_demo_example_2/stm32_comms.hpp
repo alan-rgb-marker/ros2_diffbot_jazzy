@@ -81,7 +81,7 @@ public:
 
     void read_encoder_values(int &val_1, int &val_2)
     {
-        std::string response = send_msg("\t");
+        std::string response = send_msg("r");
         std::string delimiter = " ";
         size_t del_pos = response.find(delimiter);
         std::string token_1 = response.substr(0, del_pos);
