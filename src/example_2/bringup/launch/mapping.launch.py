@@ -38,7 +38,8 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "slam_params_file",
-            default_value="./config/mymapper_params_online_async.yaml",
+            # default_value="./config/mymapper_params_online_async.yaml",
+            default_value="./config/mapper_server_params_online_async.yaml",
             description="SLAM Toolbox parameters file",
         )
     )
@@ -81,9 +82,9 @@ def generate_launch_description():
         executable="ros2_control_node",
         parameters=[robot_controllers],
         output="both",
-	#remappings=[
-        #    ("/diffbot_base_controller/odom", "/odom"),  # 新增這行！
-    	#],
+	    remappings=[
+           ("/diffbot_base_controller/odom", "/odom"),  # 新增這行！
+    	],
     )
     robot_state_pub_node = Node(
         package="robot_state_publisher",

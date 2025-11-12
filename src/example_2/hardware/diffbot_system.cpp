@@ -195,7 +195,7 @@ namespace ros2_control_demo_example_2
       const rclcpp::Time & /*time*/, const rclcpp::Duration &period)
   {
     stm32_comms_.read_encoder_values(wheel_l_.enc, wheel_r_.enc);
-    RCLCPP_INFO(get_logger(), "read succesful");
+    // RCLCPP_INFO(get_logger(), "read succesful");
 
     double delta_seconds = period.seconds();
 
@@ -222,7 +222,7 @@ namespace ros2_control_demo_example_2
     int motor_l_counts_per_loop = (int)(wheel_l_.cmd / wheel_l_.rads_per_count / config_.loop_rate);
     int motor_r_counts_per_loop = (int)(wheel_r_.cmd / wheel_r_.rads_per_count / config_.loop_rate);
     //RCLCPP_INFO(get_logger(), "Left cmd: %f, Right cmd: %f", wheel_l_.cmd, wheel_r_.cmd);
-    RCLCPP_INFO(get_logger(), "Left cmd: %d, Right cmd: %d", motor_l_counts_per_loop, motor_l_counts_per_loop);
+    // RCLCPP_INFO(get_logger(), "Left cmd: %d, Right cmd: %d", motor_l_counts_per_loop, motor_l_counts_per_loop);
     stm32_comms_.set_motor_values(motor_l_counts_per_loop, motor_r_counts_per_loop);
     return hardware_interface::return_type::OK;
   }
