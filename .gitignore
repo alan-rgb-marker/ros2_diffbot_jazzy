@@ -6,3 +6,5 @@ build/*
 install/*
 log/*
 src/example_2/sllidar_ros2/*
+home.*
+laser_filter.yaml

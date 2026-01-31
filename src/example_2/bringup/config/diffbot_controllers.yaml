@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 30  # Hz
+    update_rate: 15  # Hz
 
     diffbot_base_controller:
       type: diff_drive_controller/DiffDriveController
@@ -15,7 +15,7 @@ diffbot_base_controller:
     left_wheel_names: ["left_wheel_joint"]
     right_wheel_names: ["right_wheel_joint"]
 
-    wheel_separation: 0.154 #0.152 #0.10 #重點參數，如果與實際不符合會導致激光雷達在建圖牆壁會因為機器人移動而著這動
+    wheel_separation: 0.182 # 0.152 #0.10 #重點參數，如果與實際不符合會導致激光雷達在建圖牆壁會因為機器人移動而著這動
     #wheels_per_side: 1  # actually 2, but both are controlled by 1 signal
     wheel_radius: 0.0335 #0.015
 
@@ -23,7 +23,7 @@ diffbot_base_controller:
     left_wheel_radius_multiplier: 1.0
     right_wheel_radius_multiplier: 1.0
 
-    publish_rate: 30.0 #50.0
+    publish_rate: 15.0 #50.0
     odom_frame_id: odom
     base_frame_id: base_link
     pose_covariance_diagonal : [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]

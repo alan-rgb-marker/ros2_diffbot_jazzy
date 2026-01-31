@@ -38,8 +38,8 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "slam_params_file",
-            # default_value="./config/mymapper_params_online_async.yaml",
-            default_value="./config/mapper_server_params_online_async.yaml",
+            default_value="./config/mymapper_params_online_async.yaml",
+            # default_value="./config/mapper_server_params_online_async.yaml",
             description="SLAM Toolbox parameters file",
         )
     )
