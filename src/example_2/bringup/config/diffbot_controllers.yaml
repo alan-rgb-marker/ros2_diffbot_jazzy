@@ -1,6 +1,7 @@
 controller_manager:
   ros__parameters:
     update_rate: 15  # Hz
+    use_sim_time: true
 
     diffbot_base_controller:
       type: diff_drive_controller/DiffDriveController

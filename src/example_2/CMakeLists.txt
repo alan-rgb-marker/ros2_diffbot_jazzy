@@ -71,7 +71,7 @@ install(
   DESTINATION share/ros2_control_demo_example_2
 )
 install(
-  DIRECTORY bringup/launch bringup/config
+  DIRECTORY bringup/launch bringup/config bringup/worlds
   DESTINATION share/ros2_control_demo_example_2
 )
 install(TARGETS ros2_control_demo_example_2
