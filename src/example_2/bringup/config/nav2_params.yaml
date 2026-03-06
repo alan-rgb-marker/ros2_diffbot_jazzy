@@ -268,7 +268,7 @@ global_costmap:
 # file & provide full path to map below. If CLI map configuration or launch default is provided, that will be used.
 map_server:
   ros__parameters:
-    yaml_filename: "/home/alanros/room.yaml"
+    yaml_filename: "/home/alan/mydiffbot_ws/src/example_2/bringup/maps/sim_map.yaml"
     topic_name: "map"
     frame_id: "map"
 

@@ -39,14 +39,14 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "use_mock_hardware",
-            default_value="false",
+            default_value="true",
             description="Start robot with mock hardware mirroring command to its states.",
         )
     )
     declared_arguments.append(
         DeclareLaunchArgument(
             "use_sim_time",
-            default_value="false",
+            default_value="true",
             description="Use simulation time.",
         )
     )
@@ -59,7 +59,9 @@ def generate_launch_description():
     default_world = os.path.join(
         get_package_share_directory('ros2_control_demo_example_2'), 
         'worlds', 
-        'my_world.sdf')
+        # 'my_world.sdf'
+        'empty2.sdf'
+        )
     
     world = LaunchConfiguration('world')
     
